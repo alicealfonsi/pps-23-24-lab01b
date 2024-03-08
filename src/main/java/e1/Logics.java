@@ -1,9 +1,9 @@
 package e1;
 
-public interface Logics{
+public interface Logics {
     
     /**
-     * attempt to move Knight on position row,col, if possible
+     * Attempts to move Knight on position row,col, if possible.
      * 
      * @param row
      * @param col

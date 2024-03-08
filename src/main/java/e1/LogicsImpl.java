@@ -1,35 +1,22 @@
 package e1;
 
-import java.util.*;
-
 public class LogicsImpl implements Logics {
 	
-	private final Pair<Integer,Integer> pawn;
+	private Pair<Integer,Integer> pawn;
 	private Pair<Integer,Integer> knight;
-	private final Random random = new Random();
 	private final int size;
+	private final LogicsKnight logicsKnight;
 	 
-    public LogicsImpl(int size){
+	public LogicsImpl(final int size, final LogicsKnight logicsKnight, final InitializerPositions inizializerPositions) {
     	this.size = size;
-        this.pawn = this.randomEmptyPosition();
-        this.knight = this.randomEmptyPosition();	
-    }
-    
-	private final Pair<Integer,Integer> randomEmptyPosition(){
-    	Pair<Integer,Integer> pos = new Pair<>(this.random.nextInt(size),this.random.nextInt(size));
-    	// the recursive call below prevents clash with an existing pawn
-    	return this.pawn!=null && this.pawn.equals(pos) ? randomEmptyPosition() : pos;
+		this.logicsKnight = logicsKnight;
+		this.pawn = inizializerPositions.initializerPawnPosition();
+		this.knight = inizializerPositions.initializerKnightPosition();
     }
     
 	@Override
 	public boolean hit(int row, int col) {
-		if (row<0 || col<0 || row >= this.size || col >= this.size) {
-			throw new IndexOutOfBoundsException();
-		}
-		// Below a compact way to express allowed moves for the knight
-		int x = row-this.knight.getX();
-		int y = col-this.knight.getY();
-		if (x!=0 && y!=0 && Math.abs(x)+Math.abs(y)==3) {
+		if (this.logicsKnight.knightCanMove(this.knight, new Pair<>(row,col))) {
 			this.knight = new Pair<>(row,col);
 			return this.pawn.equals(this.knight);
 		}
@@ -45,4 +32,23 @@ public class LogicsImpl implements Logics {
 	public boolean hasPawn(int row, int col) {
 		return this.pawn.equals(new Pair<>(row,col));
 	}
+
+	private boolean positionOutOfBounds(Pair<Integer,Integer> position) {
+		return position.getX() < 0 || position.getX() > this.size ||
+		position.getY() < 0 || position.getY() > this.size;
+	}
+
+	public void setKnight(final Pair<Integer, Integer> knightPosition) {
+		if (positionOutOfBounds(knightPosition) || knightPosition.equals(this.pawn)) {
+			throw new IllegalArgumentException();
+		}
+        this.knight = knightPosition;
+    }
+	
+	public void setPawn(final Pair<Integer, Integer> pawnPosition) {
+		if (positionOutOfBounds(pawnPosition) || pawnPosition.equals(this.knight)) {
+			throw new IllegalArgumentException();
+		}
+        this.pawn = pawnPosition;
+    }
 }
