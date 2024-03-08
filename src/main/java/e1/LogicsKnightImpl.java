@@ -15,8 +15,8 @@ public class LogicsKnightImpl implements LogicsKnight {
 			throw new IndexOutOfBoundsException();
 		}
 		// Below a compact way to express allowed moves for the knight
-		int x = destinationPosition.getX() - startingPosition.getX(); // delta dello spostamento lungo x
-		int y = destinationPosition.getY() - startingPosition.getY(); // delta dello spostamento lungo y
+		int x = destinationPosition.getX() - startingPosition.getX();
+		int y = destinationPosition.getY() - startingPosition.getY();
         if (x!=0 && y!=0 && Math.abs(x) + Math.abs(y) == 3) {
             return true;
         }
